@@ -43,17 +43,6 @@ void ntpdate(char *host){
 	printf("sending data...\n");
 	i=sendto(s,msg,sizeof(msg),0,(struct sockaddr *)&server_addr,sizeof(server_addr));
 	perror("sendto");
-	//reading data back
-//	struct sockaddr saddr;
-//	socklen_t saddr_l = sizeof(saddr);
-//	i=recvfrom(s,buf,48,0,&saddr,&saddr_l);
-//	perror("recvfr:");
-//	tmit=ntohl((time_t)buf[10]); //getting transmit time
-//	tmit-=2208988800U;
-//	printf("Time: %s",ctime(&tmit));
-
-
-
 	struct sockaddr saddr;
 	socklen_t saddr_l = sizeof (saddr);
 	i=recvfrom(s,buf,48,0,&saddr,&saddr_l);
