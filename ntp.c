@@ -27,8 +27,8 @@ void ntpdate(char *host){
 	int port=123; //NTP port
 	int maxlen=1024; //buffer lenght
 	int i; //workhorse
-	unsigned char msg[48]={010,0,0,0,0,0,0,0,0};
-	unsigned long buf[maxlen]; //buffer for replies from server
+	unsigned char msg[48]={8,0,0,0,0,0,0,0,0};
+	unsigned char buf[maxlen]; //buffer for replies from server
 	struct protoent *proto;
 	struct sockaddr_in server_addr;
 	int s; //socket
@@ -41,12 +41,24 @@ void ntpdate(char *host){
 	server_addr.sin_addr.s_addr=inet_addr(host);
 	server_addr.sin_port=htons(port);
 	printf("sending data...\n");
+	for (int off = 0; off < 48; off++) {
+        	if (!(off % 0x10))
+        	printf("%s%04x: ", off ? "\n" : "", off);
+        	printf("%02x ", msg[off]);
+    	}
+    	printf("\n");
 	i=sendto(s,msg,sizeof(msg),0,(struct sockaddr *)&server_addr,sizeof(server_addr));
 	perror("sendto");
 	struct sockaddr saddr;
 	socklen_t saddr_l = sizeof (saddr);
 	i=recvfrom(s,buf,48,0,&saddr,&saddr_l);
 	perror("recvfr:");
+        for (int off = 0; off < 48; off++) {
+                if (!(off % 0x10))
+                printf("%s%04x: ", off ? "\n" : "", off);
+                printf("%02x ", buf[off]);
+        }
+	printf("\n");
 	tmit=ntohl((time_t)buf[10]);    //# get transmit time
 	tmit-= 2208988800U;
 	printf("Time: %s",ctime(&tmit));
