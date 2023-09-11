@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 void ntpdate(char *host);
+void print_packet(char p[48]);
 int main(int argc, char *argv[]){
 	printf("You have passed %d arguments\n", argc);
 	for (int i=0; i<argc; i++){
@@ -21,6 +22,14 @@ int main(int argc, char *argv[]){
 	}
 	ntpdate(hostname);
 	return 0;
+}
+void print_packet(char p[48]){
+		for (int off = 0; off < 48; off++) {
+        	if (!(off % 0x10))
+        		printf("%s%04x: ", off ? "\n" : "", off);
+        	printf("%02x ", p[off]);
+       }
+	printf("\n");
 }
 void ntpdate(char *host){
 	//printf("Hostname from function: %s",host);
@@ -41,24 +50,14 @@ void ntpdate(char *host){
 	server_addr.sin_addr.s_addr=inet_addr(host);
 	server_addr.sin_port=htons(port);
 	printf("sending data...\n");
-	for (int off = 0; off < 48; off++) {
-        	if (!(off % 0x10))
-        	printf("%s%04x: ", off ? "\n" : "", off);
-        	printf("%02x ", msg[off]);
-    	}
-    	printf("\n");
+	print_packet(msg);
 	i=sendto(s,msg,sizeof(msg),0,(struct sockaddr *)&server_addr,sizeof(server_addr));
 	perror("sendto");
 	struct sockaddr saddr;
 	socklen_t saddr_l = sizeof (saddr);
 	i=recvfrom(s,buf,48,0,&saddr,&saddr_l);
 	perror("recvfr:");
-        for (int off = 0; off < 48; off++) {
-                if (!(off % 0x10))
-                printf("%s%04x: ", off ? "\n" : "", off);
-                printf("%02x ", buf[off]);
-        }
-	printf("\n");
+	print_packet(buf);
 	tmit=ntohl((time_t)buf[10]);    //# get transmit time
 	tmit-= 2208988800U;
 	printf("Time: %s",ctime(&tmit));
