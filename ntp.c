@@ -32,7 +32,7 @@ void ntpdate(char *host){
 	struct protoent *proto;
 	struct sockaddr_in server_addr;
 	int s; //socket
-	int tmit;
+	time_t tmit;
 	proto=getprotobyname("udp"); //returns protocol number
 	s=socket(PF_INET, SOCK_DGRAM, proto->p_proto);
 	perror("socket");
