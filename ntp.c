@@ -6,23 +6,23 @@
 #include <string.h>
 
 struct ntp_packet {
-    uint8_t li: 2;
-    uint8_t vn: 3;
-    uint8_t mode: 3;
-    uint8_t stratum: 8;
-    uint8_t poll: 8;
-    uint8_t precision: 8;
-    uint32_t rootDelay;
-    uint32_t rootDispersion;
-    uint32_t refId;
-    uint32_t refTm_s;
-    uint32_t refTm_f;
-    uint32_t origTm_s;
-    uint32_t origTm_f;
-    uint32_t rxTm_s;
-    uint32_t rxTm_f;
-    uint32_t txTm_s;
-    uint32_t txTm_f;
+	uint8_t li: 2;
+	uint8_t vn: 3;
+	uint8_t mode: 3;
+	uint8_t stratum: 8;
+	uint8_t poll: 8;
+	uint8_t precision: 8;
+	uint32_t rootDelay;
+	uint32_t rootDispersion;
+	uint32_t refId;
+	uint32_t refTm_s;
+	uint32_t refTm_f;
+	uint32_t origTm_s;
+	uint32_t origTm_f;
+	uint32_t rxTm_s;
+	uint32_t rxTm_f;
+	uint32_t txTm_s;
+	uint32_t txTm_f;
 };
 
 #define PORT 123
@@ -54,10 +54,10 @@ int main(int argc, char *argv[]){
 
 void print_packet(uint8_t *pckt, int len){
 		for (int off = 0; off < 48; off++) {
-        	if (!(off % 0x10))
-        		printf("%s%04x: ", off ? "\n" : "", off);
-        	printf("%02x ", pckt[off]);
-       }
+			if (!(off % 0x10))
+				printf("%s%04x: ", off ? "\n" : "", off);
+			printf("%02x ", pckt[off]);
+		}
 	printf("\n");
 }
 
@@ -89,7 +89,7 @@ void ntpdate(char *host){
 	printf("sending data...\n");
 	print_packet((uint8_t *)&pckt, sizeof(struct ntp_packet));
 
-	sendto(s, &pckt, sizeof(pckt), 0, (struct sockaddr *)&server_addr, sizeof(server_addr));	
+	sendto(s, &pckt, sizeof(pckt), 0, (struct sockaddr *)&server_addr, sizeof(server_addr));
 	perror("sendto");
 
 	socklen_t saddr_l = sizeof(saddr);
